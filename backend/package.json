@@ -16,7 +16,6 @@
     "bugs": {
         "url": "https://github.com/daminian/express-mesto/issues"
     },
-    "homepage": "https://github.com/daminian/express-mesto#readme",
     "devDependencies": {
         "eslint": "^7.12.1",
         "eslint-config-airbnb-base": "^14.2.0",
