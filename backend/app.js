@@ -23,10 +23,29 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useUnifiedTopology: true,
 });
 
+const allowedCors = [
+  'http://localhost:3000',
+  'http://daminian.students.nomoreparties.space',
+  'http://localhost:8080',
+  'http://localhost:8081',
+];
+app.use(cors((req, cb) => {
+  let corsOptions;
+  const { origin } = req.headers;
+  if (allowedCors.includes(origin)) {
+    corsOptions = {
+      origin,
+      credentials: true,
+      allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    };
+  } else {
+    corsOptions = { origin: false };
+  }
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(cors({ origin: true }));
 
 app.use(requestLogger);
 
