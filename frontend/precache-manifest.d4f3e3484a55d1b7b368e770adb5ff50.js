@@ -1,11 +1,11 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "2a832465fe832446c81c097488bb73a8",
+    "revision": "c8e141b6d984d5b6c50d03233f261d40",
     "url": "/index.html"
   },
   {
-    "revision": "84d2010f0d8676cf862a",
-    "url": "/static/css/main.2904deb6.chunk.css"
+    "revision": "04af2834073e9cb21c5d",
+    "url": "/static/css/main.9ea78a9b.chunk.css"
   },
   {
     "revision": "f12f0b8851d7f2cc4e91",
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/js/2.d0182d5b.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "84d2010f0d8676cf862a",
-    "url": "/static/js/main.0d2727d0.chunk.js"
+    "revision": "04af2834073e9cb21c5d",
+    "url": "/static/js/main.55b64f2b.chunk.js"
   },
   {
     "revision": "c5e7b408ed1922744b94",
@@ -88,12 +88,12 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/media/Inter-ThinItalic.e08d9b2a.woff2"
   },
   {
-    "revision": "bdfb8ebb113b9312e080c2f4b4213223",
-    "url": "/static/media/add-button.bdfb8ebb.svg"
+    "revision": "b2fce4ac45f3d116cd48ec8d068ab723",
+    "url": "/static/media/add-button.b2fce4ac.svg"
   },
   {
-    "revision": "6c74d9b53442a247e20750f5de0be939",
-    "url": "/static/media/cards-like.6c74d9b5.svg"
+    "revision": "a8acc871456b1001597672e02c5199ca",
+    "url": "/static/media/cards-like.a8acc871.svg"
   },
   {
     "revision": "c91a61bdbb7d4ae02606cb4a57b38675",
@@ -108,23 +108,23 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/media/error.4072126c.svg"
   },
   {
-    "revision": "9fdebb6b009c16af50fae58657e30a94",
-    "url": "/static/media/like-aktive.9fdebb6b.svg"
+    "revision": "5bbb05f725aa334a73acf3174e255f4e",
+    "url": "/static/media/like-aktive.5bbb05f7.svg"
   },
   {
     "revision": "d3d4a40738a73b893dc27c82ac68529d",
     "url": "/static/media/logo.d3d4a407.svg"
   },
   {
-    "revision": "c7df05485663b2b3ec3b99326f0f5ea2",
-    "url": "/static/media/popup-close_icon.c7df0548.svg"
+    "revision": "3c82ae069680d348b272ed17ca28b3d6",
+    "url": "/static/media/popup-close_icon.3c82ae06.svg"
   },
   {
     "revision": "e38b395c190826b3bf6d78baff1415a0",
     "url": "/static/media/success.e38b395c.svg"
   },
   {
-    "revision": "efa6fb04512d4ea565aaa4109835b46d",
-    "url": "/static/media/trash.efa6fb04.svg"
+    "revision": "d80783439d382b46ce24b8da369767d4",
+    "url": "/static/media/trash.d8078343.svg"
   }
 ]);
