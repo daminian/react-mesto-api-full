@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 
-const PORT = 3001;
+const PORT = 3000;
 const app = express();
 const { errors } = require('celebrate');
 const { createUser, login } = require('./controllers/users');
@@ -26,10 +26,6 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 const hosts = [
   'https://localhost:3000',
   'http://localhost:3000',
-  'https://www.daminian.students.nomoreparties.space',
-  'http://www.daminian.students.nomoreparties.space',
-  'https://daminian.students.nomoreparties.space',
-  'http://daminian.students.nomoreparties.space',
   'https://www.api.daminian.students.nomoreparties.space',
   'http://www.api.daminian.students.nomoreparties.space',
   'https://api.daminian.students.nomoreparties.space',
