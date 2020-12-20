@@ -24,8 +24,6 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 });
 
 const hosts = [
-  'https://localhost:3001',
-  'http://localhost:3001',
   'https://localhost:3000',
   'http://localhost:3000',
   'https://www.daminian.students.nomoreparties.space',
