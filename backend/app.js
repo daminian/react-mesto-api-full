@@ -30,6 +30,10 @@ const hosts = [
   'http://www.api.daminian.students.nomoreparties.space',
   'https://api.daminian.students.nomoreparties.space',
   'http://api.daminian.students.nomoreparties.space',
+  'https://www.daminian.students.nomoreparties.space',
+  'http://www.daminian.students.nomoreparties.space',
+  'https://daminian.students.nomoreparties.space',
+  'http://daminian.students.nomoreparties.space',
 ];
 app.use(cors({ origin: hosts }));
 
