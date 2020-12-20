@@ -1,54 +1,57 @@
 const Card = require('../models/card');
+const { ErrorReq, ErrorNotFound } = require('../errors/errors');
 
-module.exports.findCard = (req, res) => {
+module.exports.findCard = (req, res, next) => {
   Card.find({})
-    .populate('user')
-    .then((data) => res.send(data))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .populate('owner')
+    .then((data) => {
+      res.send(data);
+    })
+    .catch(next);
 };
 
-module.exports.creatCard = (req, res) => {
-  const { name, link } = req.body;
-
-  Card.create({ name, link })
-    .then((card) => res.send({ data: card }))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Некорректные данные' });
-      } else {
-        res.status(500).send({ message: 'Произошла ошибка' });
-      }
-    });
+module.exports.creatCard = (req, res, next) => {
+  const { link, name } = req.body;
+  if (!name || !link) {
+    throw new ErrorReq('Введены неверные данные');
+  }
+  Card.create({ link, name, owner: req.user._id })
+    .then((card) => {
+      res.send(card);
+    })
+    .catch(next);
 };
 
-module.exports.deleteCard = (req, res) => {
+module.exports.deleteCard = (req, res, next) => {
   Card.findByIdAndRemove(req.params.id)
     .then((card) => {
-      if (card) {
-        res.send({ data: card });
+      if (!card) {
+        throw new ErrorNotFound('Карточка не найдена');
       } else {
-        res.status(404).send({ message: 'Карточка не найдена' });
+        res.send({ data: card });
       }
     })
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch(next);
 };
 
-module.exports.likeCard = (req, res) => {
+module.exports.likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.id,
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
+    .populate('owner')
     .then((card) => res.send({ data: card }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch(next);
 };
 
-module.exports.dislikeCard = (req, res) => {
+module.exports.dislikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.id,
     { $pull: { likes: req.user._id } },
     { new: true },
   )
+    .populate('owner')
     .then((card) => res.send({ data: card }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch(next);
 };
