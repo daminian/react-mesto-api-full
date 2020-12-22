@@ -26,31 +26,32 @@ module.exports.findByIdUser = (req, res, next) => {
 };
 
 module.exports.createUser = (req, res, next) => {
-  // User.findOne({ email: req.body.email })
-  //   .then((email) => {
-  //     if (email) {
-  //       throw new ErrorConflict('Данный пользователь уже зарегистрирован');
-  //     }
-  //   })
+  User.findOne({ email: req.body.email })
+    .then((data) => {
+      if (data.email === req.body.email) {
+        throw new ErrorConflict('Данный пользователь уже зарегистрирован');
+      }
+    });
 
   bcrypt.hash(req.body.password, 10)
     .then((hash) => {
       User.create({
         email: req.body.email,
         password: hash,
-      });
-    })
-    .then((user) => {
-      res.send({ data: user });
-    })
-    .catch((err) => {
-      if (err.name === 'MongoError') {
-        next(new ErrorConflict('Данный пользователь уже зарегистрирован'));
-      } if (err.name === 'ValidationError') {
-        next(new ErrorRequest('Некорректные данные'));
-      } else {
-        next(err);
-      }
+      })
+        .then((user) => {
+          res.send({ data: user });
+        })
+        .catch((err) => {
+          if (err.name === 'MongoError') {
+            next(new ErrorConflict('Данный пользователь уже зарегистрирован'));
+          }
+          if (err.name === 'ValidationError') {
+            next(new ErrorRequest('Некорректные данные'));
+          } else {
+            next(err);
+          }
+        });
     });
 };
 

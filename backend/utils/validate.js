@@ -3,6 +3,16 @@ const validator = require('validator');
 
 const usersEmail = (v) => validator.isEmail(v);
 
+// eslint-disable-next-line no-useless-escape
+const regex = /^(https?\:\/\/)([www\.])*([\w!-\~])*\#?$/i;
+const method = (value, helpers) => {
+  if (value !== regex) {
+    return helpers.error('any.invalid');
+  }
+
+  return value;
+};
+
 const validateRegistration = celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
@@ -32,14 +42,14 @@ const validateUpdateProfile = celebrate({
 
 const validateUpdateAvatar = celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().required(),
+    avatar: Joi.string().required().custom(method, 'custom validation'),
   }),
 });
 
 const validateCreateCard = celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
-    link: Joi.string().required(),
+    link: Joi.string().required().custom(method, 'custom validation'),
   }),
 });
 
