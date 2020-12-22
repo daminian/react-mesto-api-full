@@ -1,5 +1,5 @@
 const Card = require('../models/card');
-const { ErrorReq, ErrorNotFound } = require('../errors/errors');
+const { ErrorRequest, ErrorNotFound, ErrorForbidden } = require('../errors/errors');
 
 module.exports.findCard = (req, res, next) => {
   Card.find({})
@@ -13,7 +13,7 @@ module.exports.findCard = (req, res, next) => {
 module.exports.creatCard = (req, res, next) => {
   const { link, name } = req.body;
   if (!name || !link) {
-    throw new ErrorReq('Введены неверные данные');
+    throw new ErrorRequest('Введены неверные данные');
   }
   Card.create({ link, name, owner: req.user._id })
     .then((card) => {
@@ -23,15 +23,27 @@ module.exports.creatCard = (req, res, next) => {
 };
 
 module.exports.deleteCard = (req, res, next) => {
-  Card.findByIdAndRemove(req.params.id)
+  Card.findById(req.params.id)
     .then((card) => {
-      if (!card) {
-        throw new ErrorNotFound('Карточка не найдена');
-      } else {
-        res.send({ data: card });
+      if ((card.owner._id.toString() || card.onwer.toString()) !== req.user._id) {
+        throw new ErrorForbidden('Недостаточно прав');
+      } if (!card) {
+        throw new ErrorNotFound('Карточска не найдена');
       }
+      return Card.findByIdAndRemove(req.params.id)
+        .then((responce) => {
+          if (responce.deleteCount !== 0) {
+            res.send({ data: card });
+          }
+        });
     })
-    .catch(next);
+    .catch((err) => {
+      if (err.kind === 'ObjectId') {
+        next(new ErrorNotFound('Карточка не найдена'));
+      } else {
+        next(err);
+      }
+    });
 };
 
 module.exports.likeCard = (req, res, next) => {
@@ -41,8 +53,16 @@ module.exports.likeCard = (req, res, next) => {
     { new: true },
   )
     .populate('owner')
-    .then((card) => res.send({ data: card }))
-    .catch(next);
+    .then((card) => {
+      if (!card) {
+        throw new ErrorNotFound('Карточка не найдена');
+      } else {
+        res.send({ data: card });
+      }
+    })
+    .catch((err) => {
+      next(err);
+    });
 };
 
 module.exports.dislikeCard = (req, res, next) => {
@@ -52,6 +72,14 @@ module.exports.dislikeCard = (req, res, next) => {
     { new: true },
   )
     .populate('owner')
-    .then((card) => res.send({ data: card }))
-    .catch(next);
+    .then((card) => {
+      if (!card) {
+        throw new ErrorNotFound('Карточка не найдена');
+      } else {
+        res.send({ data: card });
+      }
+    })
+    .catch((err) => {
+      next(err);
+    });
 };

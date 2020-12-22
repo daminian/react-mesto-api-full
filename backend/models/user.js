@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
-const { usersEmail } = require('../utils/validate');
+const validator = require('validator');
 
 const userSchema = new mongoose.Schema({
   email: {
@@ -9,14 +9,22 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
     validate: {
-      validator: (v) => usersEmail(v),
+      validator(v) {
+        return validator.isEmail(v);
+      },
+      message: (props) => `${props.value} is not valid email`,
     },
-    message: (props) => `${props.value} is not valid email`,
   },
   password: {
     type: String,
     required: true,
     select: false,
+    validate: {
+      validator(v) {
+        return /[a-z0-9]*/i.test(v);
+      },
+      message: 'Пароль некорректен',
+    },
   },
   name: {
     type: String,
@@ -36,7 +44,7 @@ const userSchema = new mongoose.Schema({
     validate: {
       validator: (v) => {
         // eslint-disable-next-line no-useless-escape
-        const regex = /^(https?\:\/\/)([www\.])*([\w!-\~])*\#?$/gm;
+        const regex = /^(https|http)?:\/\/(www.)?[^-_.\s](\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3})?(:\d+)?(.+[#a-zA-Z/:0-9]{1,})?\.(.+[#a-zA-Z/:0-9]{1,})?$/i;
         return regex.test(v);
       },
       message: (props) => `${props.value} is not valid URL`,
