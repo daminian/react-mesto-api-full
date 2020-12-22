@@ -1,11 +1,13 @@
-const ErrorReq = require('./error-req');
+const ErrorRequest = require('./error-req');
 const ErrorNotFound = require('./error-notFound');
 const ErrorAuth = require('./error-auth');
-const ErrorConfict = require('./error-conflict');
+const ErrorConflict = require('./error-conflict');
+const ErrorForbidden = require('./error-forbidden');
 
 module.exports = {
-  ErrorReq,
+  ErrorRequest,
   ErrorNotFound,
   ErrorAuth,
-  ErrorConfict,
+  ErrorConflict,
+  ErrorForbidden,
 };

@@ -1,7 +1,9 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const { ErrorRequest, ErrorNotFound } = require('../errors/errors');
+const {
+  ErrorRequest, ErrorNotFound, ErrorConflict, ErrorAuth,
+} = require('../errors/errors');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
@@ -20,22 +22,41 @@ module.exports.findByIdUser = (req, res, next) => {
         res.send({ data: user });
       }
     })
-    .catch(next);
+    .catch((next));
 };
 
 module.exports.createUser = (req, res, next) => {
+  // User.findOne({ email: req.body.email })
+  //   .then((email) => {
+  //     if (email) {
+  //       throw new ErrorConflict('Данный пользователь уже зарегистрирован');
+  //     }
+  //   })
+
   bcrypt.hash(req.body.password, 10)
-    .then((hash) => User.create({
-      email: req.body.email,
-      password: hash,
-    }))
-    .then((user) => res.send({ _id: user._id, email: user.email }))
-    .catch(next);
+    .then((hash) => {
+      User.create({
+        email: req.body.email,
+        password: hash,
+      });
+    })
+    .then((user) => {
+      res.send({ data: user });
+    })
+    .catch((err) => {
+      if (err.name === 'MongoError') {
+        next(new ErrorConflict('Данный пользователь уже зарегистрирован'));
+      } if (err.name === 'ValidationError') {
+        next(new ErrorRequest('Некорректные данные'));
+      } else {
+        next(err);
+      }
+    });
 };
 
 module.exports.updateProfile = (req, res, next) => {
   const { name, about } = req.body;
-  User.findByIdAndUpdate(req.user._id, { name, about }, { new: true })
+  User.findByIdAndUpdate(req.user._id, { name, about }, { runValidators: true })
     .then((user) => {
       if (!user) {
         throw new ErrorRequest('Некорректные данные');
@@ -47,14 +68,20 @@ module.exports.updateProfile = (req, res, next) => {
 
 module.exports.updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
-  User.findByIdAndUpdate(req.user._id, { avatar }, { new: true })
+  User.findByIdAndUpdate(req.user._id, { avatar }, { runValidators: true })
     .then((user) => {
       if (!avatar) {
         throw new ErrorRequest('Некорректные данные');
       }
       res.send({ data: user.avatar });
     })
-    .catch(next);
+    .catch((err) => {
+      if (err) {
+        next(new ErrorRequest('Некорректные данные'));
+      } else {
+        next(err);
+      }
+    });
 };
 
 module.exports.getUserInfo = (req, res, next) => {
@@ -64,9 +91,7 @@ module.exports.getUserInfo = (req, res, next) => {
       if (!user) {
         throw new ErrorNotFound('Пользователь не найден');
       }
-      res.send({
-        data: user,
-      });
+      res.send({ data: user });
     })
     .catch(next);
 };
@@ -76,7 +101,7 @@ module.exports.login = (req, res, next) => {
   User.findUserByEmail(email, password)
     .then((user) => {
       if (!user) {
-        throw new ErrorNotFound('Пользователь не найден');
+        throw new ErrorAuth('Ведены неправильный email или пароль');
       }
       const jwtToken = jwt.sign(
         { _id: user._id },
@@ -88,5 +113,11 @@ module.exports.login = (req, res, next) => {
         email: user.email,
       });
     })
-    .catch(next);
+    .catch((err) => {
+      if (err) {
+        next(new ErrorAuth('Ведены неправильный email или пароль'));
+      } else {
+        next(err);
+      }
+    });
 };
