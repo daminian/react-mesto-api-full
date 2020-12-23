@@ -17,8 +17,8 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true,
     select: false,
+    required: true,
     validate: {
       validator(v) {
         return /[a-z0-9]*/i.test(v);
@@ -68,6 +68,12 @@ userSchema.statics.findUserByEmail = function (email, password) {
           return user;
         });
     });
+};
+
+userSchema.methods.toJSON = function () {
+  const obj = this.toObject();
+  delete obj.password;
+  return obj;
 };
 
 module.exports = mongoose.model('user', userSchema);

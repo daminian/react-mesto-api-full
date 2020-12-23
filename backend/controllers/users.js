@@ -22,7 +22,7 @@ module.exports.findByIdUser = (req, res, next) => {
         res.send({ data: user });
       }
     })
-    .catch((next));
+    .catch((next(new ErrorNotFound('Пользователь не найдет'))));
 };
 
 module.exports.createUser = (req, res, next) => {
@@ -40,6 +40,7 @@ module.exports.createUser = (req, res, next) => {
         password: hash,
       })
         .then((user) => {
+          console.log(user);
           res.send({ data: user });
         })
         .catch((err) => {
